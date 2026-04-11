@@ -1,3 +1,4 @@
+11/04/2026
 - Seção 1.1.1 está incompleta
 - Seção 1.2.3 não está feita
 - Seção 1.2.4 não está feita
