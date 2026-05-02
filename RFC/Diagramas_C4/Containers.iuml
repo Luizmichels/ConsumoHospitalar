@@ -1,0 +1,32 @@
+@startuml C4_Containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Diagrama de Containers — Modelo Preditivo de Consumo Hospitalar
+
+Person(usuario, "Usuário", "Consulta previsões e exporta relatórios.")
+Person(administrador, "Administrador", "Importa dados e gerencia o sistema.")
+
+System_Ext(sistemaHospitalar, "Sistema Hospitalar (ERP/Legado)", "Fornece dados históricos de consumo via API ou arquivo CSV.")
+
+System_Boundary(sistema, "Sistema de Análise Preditiva") {
+
+    Container(frontend, "Aplicação Web", "React / Next.js", "Interface do usuário para visualização de dashboard, previsões, importação de dados e gestão de usuários.")
+
+    Container(api, "API REST", "Python / FastAPI", "Processa requisições do front-end, orquestra os módulos de importação, validação, predição e exportação.")
+
+    Container(mlService, "Serviço de ML", "Python / Scikit-learn / Statsmodels", "Executa o pipeline de treinamento e geração de previsões com modelos de Machine Learning e séries temporais.")
+
+    ContainerDb(database, "Banco de Dados", "PostgreSQL", "Armazena dados históricos de consumo, previsões geradas, logs de importação e informações de usuários.")
+}
+
+Rel(usuario, frontend, "Acessa via navegador", "HTTPS")
+Rel(administrador, frontend, "Acessa via navegador", "HTTPS")
+Rel(frontend, api, "Realiza chamadas de API", "HTTPS / JSON")
+Rel(api, mlService, "Solicita treinamento e previsões", "Chamada interna Python")
+Rel(api, database, "Lê e grava dados", "SQL / SQLAlchemy")
+Rel(mlService, database, "Lê dados históricos e grava previsões", "SQL / SQLAlchemy")
+Rel(sistemaHospitalar, api, "Envia dados de consumo", "API REST / CSV Upload")
+
+@enduml
